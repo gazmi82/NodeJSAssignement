@@ -9,8 +9,8 @@ const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set("useCreateIndex", true);
 
-const clientId = "8166c53a1352db263e15";
-const clientSecret = "a6279f02c7e1b5a3ce291ee90fefa1c2a509d24e";
+// const clientId = "8166c53a1352db263e15";
+// const clientSecret = "a6279f02c7e1b5a3ce291ee90fefa1c2a509d24e";
 
 const init = async () => {
   const server = Hapi.server({
