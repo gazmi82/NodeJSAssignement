@@ -3,34 +3,58 @@
 const Hapi = require("@hapi/hapi");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+
 dotenv.config();
+
+const client_id = process.env.GITHUB_CLIENT_ID;
+const client_secret = process.env.GITHUB_CLIENT_SECRET;
+console.table([client_id, client_secret]);
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.set("useCreateIndex", true);
-
-// const clientId = "8166c53a1352db263e15";
-// const clientSecret = "a6279f02c7e1b5a3ce291ee90fefa1c2a509d24e";
+// mongoose.set("useCreateIndex", true);
 
 const init = async () => {
   const server = Hapi.server({
-    port: 3000,
+    port: 5000,
     host: "localhost",
   });
+
+  // Home
   server.route({
     method: "GET",
     path: "/",
     handler: (request, h) => {
-      return "<h3>Hiiiiiiii!</h3>";
+      return "<h1>Node Assignement Project</h1>";
+    },
+  });
+
+  // Login
+  server.route({
+    method: "GET",
+    path: "/login/oauth/authorize",
+    handler: (request, h) => {
+      return h.redirect(
+        `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=http://localhost:5000/login/github/callback`
+      );
+    },
+  });
+
+  // callback
+  server.route({
+    method: "GET",
+    path: "/login/github/callback",
+    handler: (request, h) => {
+      return "<h1>Callback!</h1>";
     },
   });
   await server.start();
-  console.log("Server running on port 5000");
+  console.log("Server on port 5000");
 };
 
 const connection = mongoose.connection;
 connection.once("open", () => {
-  console.log("MongoDB database connected");
+  console.log("MongoDB connected");
 });
 
 process.on("unhandledRejection", (err) => {
