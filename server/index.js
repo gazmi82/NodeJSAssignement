@@ -2,6 +2,7 @@
 
 const Hapi = require("@hapi/hapi");
 const dotenv = require("dotenv");
+const fetch = require("fetch");
 const mongoose = require("mongoose");
 
 dotenv.config();
@@ -40,6 +41,25 @@ const init = async () => {
     },
   });
 
+  // async function getUserToken(token) {
+  //   const response = await fetch(
+  //     "https://github.com/login/oauth/access_token",
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         client_id,
+  //         client_secret,
+  //         token,
+  //       }),
+  //     }
+  //   );
+  //   const data = await response.text();
+  //   const params = new URLSearchParams(data);
+  //   return params.get("access_token");
+  // }
   // callback
   server.route({
     method: "GET",
