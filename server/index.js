@@ -2,7 +2,7 @@
 
 const Hapi = require("@hapi/hapi");
 const dotenv = require("dotenv");
-const fetch = require("fetch").fetchUrl;
+const fetch = require("node-fetch");
 const mongoose = require("mongoose");
 
 dotenv.config();
@@ -53,7 +53,7 @@ const init = async () => {
         code,
       }),
     });
-    const data = await res.text();
+    const data = res.text();
     const params = new URLSearchParams(data);
     return params.get("access_token");
   }
@@ -65,6 +65,7 @@ const init = async () => {
       const code = request.query.code;
       const token = await getUserToken(code);
       res.json({ token });
+      console.log(token);
     },
   });
   await server.start();
