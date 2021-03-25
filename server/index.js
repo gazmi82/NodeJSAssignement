@@ -2,9 +2,8 @@
 
 const Hapi = require("@hapi/hapi");
 const dotenv = require("dotenv");
-const fetch = require("fetch");
+const fetch = require("fetch").fetchUrl;
 const mongoose = require("mongoose");
-console.log(fetch);
 
 dotenv.config();
 
@@ -43,21 +42,18 @@ const init = async () => {
   });
 
   async function getUserToken(code) {
-    const response = await fetch(
-      "https://github.com/login/oauth/access_token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          client_id,
-          client_secret,
-          code,
-        }),
-      }
-    );
-    const data = await h.text();
+    const res = await fetch("https://github.com/login/oauth/access_token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        client_id,
+        client_secret,
+        code,
+      }),
+    });
+    const data = await res.text();
     const params = new URLSearchParams(data);
     return params.get("access_token");
   }
@@ -65,10 +61,10 @@ const init = async () => {
   server.route({
     method: "GET",
     path: "/login/github/callback",
-    async handler(request, h) {
+    async handler(request, res) {
       const code = request.query.code;
       const token = await getUserToken(code);
-      h.json({ token });
+      res.json({ token });
     },
   });
   await server.start();
