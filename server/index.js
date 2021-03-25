@@ -53,24 +53,38 @@ const init = async () => {
         code,
       }),
     });
-    const data = res.text();
+    const data = await res.text();
     const params = new URLSearchParams(data);
     return params.get("access_token");
   }
+
   // callback
   server.route({
     method: "GET",
     path: "/login/github/callback",
-    async handler(request, res) {
+    handler: async (request, res) => {
       const code = request.query.code;
       const token = await getUserToken(code);
-      res.json({ token });
-      console.log(token);
+      const user = await fetchGitHubUser(token);
+      if (user) {
+        return user;
+      }
+      // res.json({ token });
+      // console.log(token);
     },
   });
   await server.start();
   console.log("Server on port 5000");
 };
+
+async function fetchGitHubUser(token) {
+  const request = await fetch("https://api.github.com/user", {
+    headers: {
+      Authorization: "token " + token,
+    },
+  });
+  return await request.json();
+}
 
 const connection = mongoose.connection;
 connection.once("open", () => {
