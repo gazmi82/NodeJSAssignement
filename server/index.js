@@ -36,7 +36,7 @@ const init = async () => {
     path: "/login/oauth/authorize",
     handler: (request, h) => {
       return h.redirect(
-        `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=http://localhost:5000/login/github/callback`
+        `https://github.com/login/oauth/authorize?client_id=${client_id}`
       );
     },
   });
@@ -69,8 +69,8 @@ const init = async () => {
       if (user) {
         return user;
       }
-      // res.json({ token });
-      // console.log(token);
+      res.json({ token });
+      console.log(token);
     },
   });
   await server.start();
