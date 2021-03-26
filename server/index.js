@@ -66,8 +66,8 @@ const init = async () => {
       const code = request.query.code;
       const token = await getUserToken(code);
       const user = await fetchGitHubUser(token);
-      if (user) {
-        return user;
+      if (fetchGitHubUser.starred_url === fetchGitHubUser.starred_url) {
+        return user.starred_url;
       }
       res.json({ token });
       console.log(token);
