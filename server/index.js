@@ -13,7 +13,10 @@ console.table([client_id, client_secret]);
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-// mongoose.set("useCreateIndex", true);
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("MongoDB connected");
+});
 
 const init = async () => {
   const server = Hapi.server({
@@ -62,17 +65,20 @@ const init = async () => {
   server.route({
     method: "GET",
     path: "/login/github/callback",
+
     handler: async (request, res) => {
       const code = request.query.code;
       const token = await getUserToken(code);
       const user = await fetchGitHubUser(token);
-      if (fetchGitHubUser.starred_url === fetchGitHubUser.starred_url) {
-        return user.starred_url;
+
+      if (user) {
+        return res.redirect(
+          `https://api.github.com/users/${user.login}/starred`
+        );
       }
-      res.json({ token });
-      console.log(token);
     },
   });
+
   await server.start();
   console.log("Server on port 5000");
 };
@@ -85,11 +91,6 @@ async function fetchGitHubUser(token) {
   });
   return await request.json();
 }
-
-const connection = mongoose.connection;
-connection.once("open", () => {
-  console.log("MongoDB connected");
-});
 
 process.on("unhandledRejection", (err) => {
   console.log(err);
