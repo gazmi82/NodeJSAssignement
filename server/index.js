@@ -13,9 +13,11 @@ console.table([client_id, client_secret]);
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set("useCreateIndex", true);
+
 const connection = mongoose.connection;
 connection.once("open", () => {
-  console.log("MongoDB connected");
+  console.log("MongoDB database connected");
 });
 
 const init = async () => {
@@ -29,7 +31,7 @@ const init = async () => {
     method: "GET",
     path: "/",
     handler: (request, h) => {
-      return "<h1>Node Assignement Project</h1>";
+      return "<h1>Node Assignement Project 🎉</h1>";
     },
   });
 
@@ -61,6 +63,15 @@ const init = async () => {
     return params.get("access_token");
   }
 
+  async function fetchGitHubUser(token) {
+    const request = await fetch("https://api.github.com/user", {
+      headers: {
+        Authorization: "token " + token,
+      },
+    });
+    return await request.json();
+  }
+
   // callback
   server.route({
     method: "GET",
@@ -82,15 +93,6 @@ const init = async () => {
   await server.start();
   console.log("Server on port 5000");
 };
-
-async function fetchGitHubUser(token) {
-  const request = await fetch("https://api.github.com/user", {
-    headers: {
-      Authorization: "token " + token,
-    },
-  });
-  return await request.json();
-}
 
 process.on("unhandledRejection", (err) => {
   console.log(err);
