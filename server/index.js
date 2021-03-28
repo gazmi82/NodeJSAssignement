@@ -46,22 +46,51 @@ const init = async () => {
     },
   });
 
-  async function getUserToken(code) {
-    const res = await fetch("https://github.com/login/oauth/access_token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        client_id,
-        client_secret,
-        code,
-      }),
-    });
-    const data = await res.text();
-    const params = new URLSearchParams(data);
-    return params.get("access_token");
-  }
+  server.route({
+    method: "GET",
+    path: "/login/github/callback",
+
+    handler: async (request, res) => {
+      const code = request.query.code;
+
+      const response = await fetch(
+        "https://github.com/login/oauth/access_token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            client_id,
+            client_secret,
+            code,
+          }),
+        }
+      );
+      const data = await response.text();
+      const params = new URLSearchParams(data);
+      const token = params.get("access_token");
+      const user = await fetchGitHubUser(token);
+      return user;
+    },
+  });
+
+  // async function getUserToken(code) {
+  //   const res = await fetch("https://github.com/login/oauth/access_token", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       client_id,
+  //       client_secret,
+  //       code,
+  //     }),
+  //   });
+  //   const data = await res.text();
+  //   const params = new URLSearchParams(data);
+  //   return params.get("access_token");
+  // }
 
   async function fetchGitHubUser(token) {
     const request = await fetch("https://api.github.com/user", {
@@ -73,22 +102,25 @@ const init = async () => {
   }
 
   // callback
-  server.route({
-    method: "GET",
-    path: "/login/github/callback",
+  // server.route({
+  //   method: "GET",
+  //   path: "/login/github/callback",
 
-    handler: async (request, res) => {
-      const code = request.query.code;
-      const token = await getUserToken(code);
-      const user = await fetchGitHubUser(token);
+  //   handler: async (request, res) => {
+  //     const code = request.query.code;
+  //     const token = await getUserToken(code);
+  //     const user = await fetchGitHubUser(token);
 
-      if (user) {
-        return res.redirect(
-          `https://api.github.com/users/${user.login}/starred`
-        );
-      }
-    },
-  });
+  //     if (user) {
+  //       return user;
+  //       // return res.redirect(`https://localhost:3000/profile`);
+
+  //       return res.redirect(
+  //         `https://api.github.com/users/${user.login}/starred`
+  //       );
+  //     }
+  //   },
+  // });
 
   await server.start();
   console.log("Server on port 5000");

@@ -1,6 +1,5 @@
 import axios from "axios";
 
 export const Api = axios.create({
-  baseURL: "/login/oauth/authorize",
-  responseType: "json",
+  baseURL: "http://localhost:5000/login/oauth",
 });
