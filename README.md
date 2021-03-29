@@ -10,9 +10,7 @@ node index.js
 ```
 
 ```
-bash
-cd /node-client
-npm start
+cd /node-client or npm start
 ```
 
-#Install google extentions (Cross Domain - CORS) to manage cors ....
+Install google extentions [Cross Domain - CORS] (https://chrome.google.com/webstore/detail/cross-domain-cors/mjhpgnbimicffchbodmgfnemoghjakai) to manage cors ....
