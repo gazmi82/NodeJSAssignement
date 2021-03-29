@@ -24,6 +24,13 @@ const init = async () => {
   const server = Hapi.server({
     port: 5000,
     host: "localhost",
+    // routes: {
+    //   cors: {
+    //     origin: ["Access-Control-Allow-Origin", "localhost:5000"],
+    //     headers: ["Accept", "Content-Type"],
+    //     additionalHeaders: ["X-Requested-With"],
+    //   },
+    // },
   });
 
   // Home
