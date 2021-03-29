@@ -4,7 +4,7 @@ const Hapi = require("@hapi/hapi");
 const dotenv = require("dotenv");
 const fetch = require("node-fetch");
 const mongoose = require("mongoose");
-
+const repoSchema = require("./Model/repos");
 dotenv.config();
 
 const client_id = process.env.GITHUB_CLIENT_ID;
@@ -24,13 +24,13 @@ const init = async () => {
   const server = Hapi.server({
     port: 5000,
     host: "localhost",
-    // routes: {
-    //   cors: {
-    //     origin: ["Access-Control-Allow-Origin", "localhost:5000"],
-    //     headers: ["Accept", "Content-Type"],
-    //     additionalHeaders: ["X-Requested-With"],
-    //   },
-    // },
+    routes: {
+      cors: {
+        origin: ["*"],
+        headers: ["Accept", "Content-Type"],
+        additionalHeaders: ["X-Requested-With"],
+      },
+    },
   });
 
   // Home
@@ -43,6 +43,7 @@ const init = async () => {
   });
 
   // Login
+  //&redirect_uri=http://localhost:5000/login/github/callback
   server.route({
     method: "GET",
     path: "/login/oauth/authorize",
@@ -78,26 +79,10 @@ const init = async () => {
       const params = new URLSearchParams(data);
       const token = params.get("access_token");
       const user = await fetchGitHubUser(token);
+      handleData(user);
       return user;
     },
   });
-
-  // async function getUserToken(code) {
-  //   const res = await fetch("https://github.com/login/oauth/access_token", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       client_id,
-  //       client_secret,
-  //       code,
-  //     }),
-  //   });
-  //   const data = await res.text();
-  //   const params = new URLSearchParams(data);
-  //   return params.get("access_token");
-  // }
 
   async function fetchGitHubUser(token) {
     const request = await fetch("https://api.github.com/user", {
@@ -108,26 +93,22 @@ const init = async () => {
     return await request.json();
   }
 
-  // callback
-  // server.route({
-  //   method: "GET",
-  //   path: "/login/github/callback",
-
-  //   handler: async (request, res) => {
-  //     const code = request.query.code;
-  //     const token = await getUserToken(code);
-  //     const user = await fetchGitHubUser(token);
-
-  //     if (user) {
-  //       return user;
-  //       // return res.redirect(`https://localhost:3000/profile`);
-
-  //       return res.redirect(
-  //         `https://api.github.com/users/${user.login}/starred`
-  //       );
-  //     }
-  //   },
-  // });
+  async function handleData(rrep) {
+    console.log("sended");
+    //repoSchema.name = rrep.name;
+    let a = {
+      name: rrep.name,
+      url: rrep.url,
+      stargazers_count: rrep.stargazers_count,
+    };
+    repoSchema.create(a, function (err, newlyCreated) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("ok");
+      }
+    });
+  }
 
   await server.start();
   console.log("Server on port 5000");
