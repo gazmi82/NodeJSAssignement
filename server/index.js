@@ -99,14 +99,6 @@ const init = async () => {
     return await request.json();
   }
 
-  server.route({
-    method: "POST",
-    path: "/login/github/callback",
-    handler: (request, h) => {
-      return handleData(h);
-    },
-  });
-
   async function handleData(rrep, request) {
     console.log("sended");
     let listOfStarredRepos = await fetchStaredRepos(rrep.login);
