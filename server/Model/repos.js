@@ -6,12 +6,12 @@ const repoSchema = new Schema({
     type: String,
     required: true,
   },
-  url: {
+  html_url: {
     type: String,
     required: true,
   },
   stargazers_count: {
-    type: String,
+    type: Array,
   },
 });
 

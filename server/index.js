@@ -93,15 +93,30 @@ const init = async () => {
     return await request.json();
   }
 
-  async function handleData(rrep) {
+  async function fetchStaredRepos(user) {
+    let uri = `https://api.github.com/users/${user}/starred`;
+    const request = await fetch(uri);
+    return await request.json();
+  }
+
+  server.route({
+    method: "POST",
+    path: "/login/github/callback",
+    handler: (request, h) => {
+      return handleData(h);
+    },
+  });
+
+  async function handleData(rrep, request) {
     console.log("sended");
-    //repoSchema.name = rrep.name;
-    let a = {
+    let listOfStarredRepos = await fetchStaredRepos(rrep.login);
+    let object = {
       name: rrep.name,
-      url: rrep.url,
-      stargazers_count: rrep.stargazers_count,
+      html_url: rrep.url,
+      stargazers_count: listOfStarredRepos,
     };
-    repoSchema.create(a, function (err, newlyCreated) {
+
+    repoSchema.create(object, function (err, newlyCreated) {
       if (err) {
         console.log(err);
       } else {
