@@ -17,3 +17,13 @@ node index.js
 run node-client
 npm start
 ```
+
+{
+  "name": "swiper/react",
+  "private": true,
+  "main": "../swiper-react.cjs.js",
+  "jsnext:main": "../swiper-react.esm.js",
+  "module": "../swiper-react.esm.js",
+  "typings": "../swiper-react.d.ts",
+  "sideEffects": false
+}
