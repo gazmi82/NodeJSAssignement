@@ -27,3 +27,14 @@ npm start
   "typings": "../swiper-react.d.ts",
   "sideEffects": false
 }
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// import Swiper core and required modules
+import SwiperCore, { Navigation } from "swiper/core";
+
+import "swiper/swiper.min.css";
+import "swiper/components/pagination/pagination.min.css";
+import "swiper/components/navigation/navigation.min.css";
+
+SwiperCore.use([Navigation]);
