@@ -69,6 +69,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
+<!--
 {
   "name": "swiper/react",
   "private": true,
@@ -86,4 +87,4 @@ import SwiperCore, { Navigation } from "swiper/core";
 
 import "swiper/swiper.min.css";
 import "swiper/components/pagination/pagination.min.css";
-import "swiper/components/navigation/navigation.min.css";
+import "swiper/components/navigation/navigation.min.css"; -->
